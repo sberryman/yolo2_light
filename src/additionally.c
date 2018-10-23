@@ -71,7 +71,7 @@ void yolov2_fuse_conv_batchnorm(network net)
         layer *l = &net.layers[j];
 
         if (l->type == CONVOLUTIONAL) {
-            printf(" Fuse Convolutional layer \t\t l->size = %d  \n", l->size);
+            printf(stderr, " Fuse Convolutional layer \t\t l->size = %d  \n", l->size);
 
             if (l->batch_normalize) {
                 int f;
@@ -103,7 +103,7 @@ void yolov2_fuse_conv_batchnorm(network net)
             }
         }
         else {
-            printf(" Skip layer: %d \n", l->type);
+            printf(stderr, " Skip layer: %d \n", l->type);
         }
     }
 }
@@ -937,7 +937,7 @@ void gemm_nn_custom_bin_mean_transposed(int M, int N, int K, float ALPHA_UNUSED,
                 __m256i xor256 = _mm256_xor_si256(a_bit256, b_bit256);  // xnor = not(xor(a,b))
                 __m256i c_bit256 = _mm256_andnot_si256(xor256, all_1);  // can be optimized - we can do other NOT for wegihts once and do not do this NOT
 
-                count_sum = _mm256_add_epi64(count256(c_bit256), count_sum);    //  Mula’s algorithm
+                count_sum = _mm256_add_epi64(count256(c_bit256), count_sum);    //  Mulaï¿½s algorithm
 
                                                                                 //count += popcnt256(c_bit256);
 
