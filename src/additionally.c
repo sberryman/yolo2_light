@@ -71,7 +71,7 @@ void yolov2_fuse_conv_batchnorm(network net)
         layer *l = &net.layers[j];
 
         if (l->type == CONVOLUTIONAL) {
-            printf(" Fuse Convolutional layer \t\t l->size = %d  \n", l->size);
+            // printf(" Fuse Convolutional layer \t\t l->size = %d  \n", l->size);
 
             if (l->batch_normalize) {
                 int f;
@@ -103,7 +103,7 @@ void yolov2_fuse_conv_batchnorm(network net)
             }
         }
         else {
-            printf(" Skip layer: %d \n", l->type);
+            // printf(" Skip layer: %d \n", l->type);
         }
     }
 }
@@ -168,21 +168,21 @@ static inline uint64_t fill_bit_int64(char src) {
 void binary_int32_printf(uint32_t src) {
     int i;
     for (i = 0; i < 32; ++i) {
-        if (src & 1) printf("1");
-        else printf("0");
+        // if (src & 1) printf("1");
+        // else printf("0");
         src = src >> 1;
     }
-    printf("\n");
+    // printf("\n");
 }
 
 void binary_int64_printf(uint64_t src) {
     int i;
     for (i = 0; i < 64; ++i) {
-        if (src & 1) printf("1");
-        else printf("0");
+        // if (src & 1) printf("1");
+        // else printf("0");
         src = src >> 1;
     }
-    printf("\n");
+    // printf("\n");
 }
 
 void get_mean_array(float *src, size_t size, size_t filters, float *mean_arr) {
@@ -937,7 +937,7 @@ void gemm_nn_custom_bin_mean_transposed(int M, int N, int K, float ALPHA_UNUSED,
                 __m256i xor256 = _mm256_xor_si256(a_bit256, b_bit256);  // xnor = not(xor(a,b))
                 __m256i c_bit256 = _mm256_andnot_si256(xor256, all_1);  // can be optimized - we can do other NOT for wegihts once and do not do this NOT
 
-                count_sum = _mm256_add_epi64(count256(c_bit256), count_sum);    //  Mula’s algorithm
+                count_sum = _mm256_add_epi64(count256(c_bit256), count_sum);    //  Mulas algorithm
 
                                                                                 //count += popcnt256(c_bit256);
 
@@ -1328,7 +1328,7 @@ char *fgetl(FILE *fp)
             size *= 2;
             line = realloc(line, size * sizeof(char));
             if (!line) {
-                printf("%ld\n", (int long)size);
+                // printf("%ld\n", (int long)size);
                 malloc_error();
             }
         }
@@ -1975,7 +1975,7 @@ void free_layer(layer l)
 softmax_layer make_softmax_layer(int batch, int inputs, int groups)
 {
     assert(inputs%groups == 0);
-    fprintf(stderr, "softmax                                        %4d\n", inputs);
+    // fprintf(stderr, "softmax                                        %4d\n", inputs);
     softmax_layer l = { 0 };
     l.type = SOFTMAX;
     l.batch = batch;
@@ -2038,8 +2038,8 @@ layer make_upsample_layer(int batch, int w, int h, int c, int stride)
 
     l.output_gpu = cuda_make_array(l.output, l.outputs*batch);
 #endif
-    if (l.reverse) fprintf(stderr, "downsample         %2dx  %4d x%4d x%4d   ->  %4d x%4d x%4d\n", stride, w, h, c, l.out_w, l.out_h, l.out_c);
-    else fprintf(stderr, "upsample           %2dx  %4d x%4d x%4d   ->  %4d x%4d x%4d\n", stride, w, h, c, l.out_w, l.out_h, l.out_c);
+    // if (l.reverse) fprintf(stderr, "downsample         %2dx  %4d x%4d x%4d   ->  %4d x%4d x%4d\n", stride, w, h, c, l.out_w, l.out_h, l.out_c);
+    // else fprintf(stderr, "upsample           %2dx  %4d x%4d x%4d   ->  %4d x%4d x%4d\n", stride, w, h, c, l.out_w, l.out_h, l.out_c);
     return l;
 }
 
@@ -2048,7 +2048,7 @@ layer make_upsample_layer(int batch, int w, int h, int c, int stride)
 // shortcut.c
 layer make_shortcut_layer(int batch, int index, int w, int h, int c, int w2, int h2, int c2)
 {
-    fprintf(stderr, "Shortcut Layer: %d\n", index);
+    // fprintf(stderr, "Shortcut Layer: %d\n", index);
     layer l = { 0 };
     l.type = SHORTCUT;
     l.batch = batch;
@@ -2093,7 +2093,7 @@ layer make_reorg_layer(int batch, int w, int h, int c, int stride, int reverse)
         l.out_c = c*(stride*stride);
     }
     l.reverse = reverse;
-    fprintf(stderr, "reorg              /%2d  %4d x%4d x%4d   ->  %4d x%4d x%4d\n", stride, w, h, c, l.out_w, l.out_h, l.out_c);
+    // fprintf(stderr, "reorg              /%2d  %4d x%4d x%4d   ->  %4d x%4d x%4d\n", stride, w, h, c, l.out_w, l.out_h, l.out_c);
     l.outputs = l.out_h * l.out_w * l.out_c;
     l.inputs = h*w*c;
     int output_size = l.out_h * l.out_w * l.out_c * batch;
@@ -2126,7 +2126,7 @@ layer make_reorg_layer(int batch, int w, int h, int c, int stride, int reverse)
 // route_layer.c
 route_layer make_route_layer(int batch, int n, int *input_layers, int *input_sizes)
 {
-    fprintf(stderr, "route ");
+    // fprintf(stderr, "route ");
     route_layer l = { 0 };
     l.type = ROUTE;
     l.batch = batch;
@@ -2136,10 +2136,10 @@ route_layer make_route_layer(int batch, int n, int *input_layers, int *input_siz
     int i;
     int outputs = 0;
     for (i = 0; i < n; ++i) {
-        fprintf(stderr, " %d", input_layers[i]);
+        // fprintf(stderr, " %d", input_layers[i]);
         outputs += input_sizes[i];
     }
-    fprintf(stderr, "\n");
+    // fprintf(stderr, "\n");
     l.outputs = outputs;
     l.inputs = outputs;
     //l.delta = calloc(outputs*batch, sizeof(float));
@@ -2208,7 +2208,7 @@ layer make_yolo_layer(int batch, int w, int h, int n, int total, int *mask, int 
     l.output_gpu = cuda_make_array(l.output, batch*l.outputs);
 #endif
 
-    fprintf(stderr, "yolo\n");
+    // fprintf(stderr, "yolo\n");
     srand(0);
 
     return l;
@@ -2258,7 +2258,7 @@ region_layer make_region_layer(int batch, int w, int h, int n, int classes, int 
     l.output_ocl = ocl_make_array(l.output, batch*l.outputs);
 #endif
 
-    fprintf(stderr, "detection\n");
+    // fprintf(stderr, "detection\n");
     srand(0);
 
     return l;
@@ -2326,7 +2326,7 @@ maxpool_layer make_maxpool_layer(int batch, int h, int w, int c, int size, int s
     l.indexes_ocl = ocl_make_int_array(output_size);
     l.output_ocl = ocl_make_array(l.output, output_size);
 #endif
-    fprintf(stderr, "max          %d x %d / %d  %4d x%4d x%4d   ->  %4d x%4d x%4d\n", size, size, stride, w, h, c, l.out_w, l.out_h, l.out_c);
+    // fprintf(stderr, "max          %d x %d / %d  %4d x%4d x%4d   ->  %4d x%4d x%4d\n", size, size, stride, w, h, c, l.out_w, l.out_h, l.out_c);
     return l;
 }
 
@@ -2552,10 +2552,10 @@ convolutional_layer make_convolutional_layer(int batch, int h, int w, int c, int
     l.activation = activation;
 
     l.bflops = (2.0 * l.n * l.size*l.size*l.c * l.out_h*l.out_w) / 1000000000.;
-    if (l.xnor && l.use_bin_output) fprintf(stderr, "convXB");
-    else if (l.xnor) fprintf(stderr, "convX ");
-    else fprintf(stderr, "conv  ");
-    fprintf(stderr, "%5d %2d x%2d /%2d  %4d x%4d x%4d   ->  %4d x%4d x%4d %5.3f BF\n", n, size, size, stride, w, h, c, l.out_w, l.out_h, l.out_c, l.bflops);
+    // if (l.xnor && l.use_bin_output) fprintf(stderr, "convXB");
+    // else if (l.xnor) fprintf(stderr, "convX ");
+    // else fprintf(stderr, "conv  ");
+    // fprintf(stderr, "%5d %2d x%2d /%2d  %4d x%4d x%4d   ->  %4d x%4d x%4d %5.3f BF\n", n, size, size, stride, w, h, c, l.out_w, l.out_h, l.out_c, l.bflops);
 
     return l;
 }
@@ -2836,7 +2836,7 @@ void show_image_cv(image p, const char *name)
     constrain_image(copy);
     if (p.c == 3) rgbgr_image(copy);
     char buff[256];
-    sprintf(buff, "%s", name);
+    // sprintf(buff, "%s", name);
 
     IplImage *disp = cvCreateImage(cvSize(p.w, p.h), IPL_DEPTH_8U, p.c);
     int step = disp->widthStep;
@@ -2859,7 +2859,7 @@ void show_image_cv_ipl(IplImage *disp, const char *name)
 {
     if (disp == NULL) return;
     char buff[256];
-    sprintf(buff, "%s", name);
+    // sprintf(buff, "%s", name);
     cvNamedWindow(buff, CV_WINDOW_NORMAL);
     cvShowImage(buff, disp);
 }
@@ -2869,7 +2869,7 @@ void show_image_cv_ipl(IplImage *disp, const char *name)
 void save_image_png(image im, const char *name)
 {
     char buff[256];
-    sprintf(buff, "%s.png", name);
+    // sprintf(buff, "%s.png", name);
     unsigned char *data = calloc(im.w*im.h*im.c, sizeof(char));
     int i, k;
     for (k = 0; k < im.c; ++k) {
@@ -3010,7 +3010,7 @@ char *option_find_str(list *l, char *key, char *def)
 {
     char *v = option_find(l, key);
     if (v) return v;
-    if (def) fprintf(stderr, "%s: Using default '%s'\n", key, def);
+    // if (def) fprintf(stderr, "%s: Using default '%s'\n", key, def);
     return def;
 }
 
@@ -3019,7 +3019,7 @@ int option_find_int(list *l, char *key, int def)
 {
     char *v = option_find(l, key);
     if (v) return atoi(v);
-    fprintf(stderr, "%s: Using default '%d'\n", key, def);
+    // fprintf(stderr, "%s: Using default '%d'\n", key, def);
     return def;
 }
 
@@ -3044,7 +3044,7 @@ float option_find_float(list *l, char *key, float def)
 {
     char *v = option_find(l, key);
     if (v) return atof(v);
-    fprintf(stderr, "%s: Using default '%lf'\n", key, def);
+    // fprintf(stderr, "%s: Using default '%lf'\n", key, def);
     return def;
 }
 
@@ -3146,7 +3146,7 @@ void load_weights_upto_cpu(network *net, char *filename, int cutoff)
         cuda_set_device(net->gpu_index);
     }
 #endif
-    fprintf(stderr, "Loading weights from %s...", filename);
+    // fprintf(stderr, "Loading weights from %s...", filename);
     fflush(stdout);
     FILE *fp = fopen(filename, "rb");
     if (!fp) file_error(filename);
@@ -3175,7 +3175,7 @@ void load_weights_upto_cpu(network *net, char *filename, int cutoff)
             load_convolutional_weights_cpu(l, fp);
         }
     }
-    fprintf(stderr, "Done!\n");
+    // fprintf(stderr, "Done!\n");
     fclose(fp);
 }
 
@@ -3305,8 +3305,8 @@ layer parse_yolo(list *options, size_params params)
     int max_boxes = option_find_int_quiet(options, "max", 90);
     layer l = make_yolo_layer(params.batch, params.w, params.h, num, total, mask, classes, max_boxes);
     if (l.outputs != params.inputs) {
-        printf("Error: l.outputs == params.inputs \n");
-        printf("filters= in the [convolutional]-layer doesn't correspond to classes= or mask= in [yolo]-layer \n");
+        printf(stderr, "Error: l.outputs == params.inputs \n");
+        printf(stderr, "filters= in the [convolutional]-layer doesn't correspond to classes= or mask= in [yolo]-layer \n");
         exit(EXIT_FAILURE);
     }
     //assert(l.outputs == params.inputs);
@@ -3634,10 +3634,10 @@ network parse_network_cfg(char *filename, int batch, int quantized)
     n = n->next;
     int count = 0;
     free_section(s);
-    fprintf(stderr, "layer     filters    size              input                output\n");
+    // fprintf(stderr, "layer     filters    size              input                output\n");
     while (n) {
         params.index = count;
-        fprintf(stderr, "%5d ", count);
+        // fprintf(stderr, "%5d ", count);
         s = (section *)n->val;
         options = s->options;
         layer l = { 0 };
@@ -3912,15 +3912,15 @@ void find_replace(char *str, char *orig, char *rep, char *output)
     char buffer[4096] = { 0 };
     char *p;
 
-    sprintf(buffer, "%s", str);
+    // sprintf(buffer, "%s", str);
     if (!(p = strstr(buffer, orig))) {  // Is 'orig' even in 'str'?
-        sprintf(output, "%s", str);
+        // sprintf(output, "%s", str);
         return;
     }
 
     *p = '\0';
 
-    sprintf(output, "%s%s%s", buffer, rep, p + strlen(orig));
+    // sprintf(output, "%s%s%s", buffer, rep, p + strlen(orig));
 }
 
 void correct_yolo_boxes(detection *dets, int n, int w, int h, int netw, int neth, int relative, int letter)
@@ -4258,7 +4258,7 @@ void validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, float
     }
     time_t start = time(0);
     for (i = nthreads; i < m + nthreads; i += nthreads) {
-        fprintf(stderr, "%d\n", i);
+        // fprintf(stderr, "%d\n", i);
         for (t = 0; t < nthreads && i + t - nthreads < m; ++t) {
             pthread_join(thr[t], 0);
             val[t] = buf[t];
@@ -4439,7 +4439,7 @@ void validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, float
     for (i = 0; i < classes; ++i) {
         pr[i] = calloc(detections_count, sizeof(pr_t));
     }
-    printf("detections_count = %d, unique_truth_count = %d  \n", detections_count, unique_truth_count);
+    // printf("detections_count = %d, unique_truth_count = %d  \n", detections_count, unique_truth_count);
 
 
     int *truth_flags = calloc(unique_truth_count, sizeof(int));
@@ -4509,21 +4509,21 @@ void validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, float
             avg_precision += cur_precision;
         }
         avg_precision = avg_precision / 11;
-        printf("class_id = %d, name = %s, \t ap = %2.2f %% \n", i, names[i], avg_precision * 100);
+        // printf("class_id = %d, name = %s, \t ap = %2.2f %% \n", i, names[i], avg_precision * 100);
         mean_average_precision += avg_precision;
     }
 
     const float cur_precision = (float)tp_for_thresh / ((float)tp_for_thresh + (float)fp_for_thresh);
     const float cur_recall = (float)tp_for_thresh / ((float)tp_for_thresh + (float)(unique_truth_count - tp_for_thresh));
     const float f1_score = 2.F * cur_precision * cur_recall / (cur_precision + cur_recall);
-    printf(" for thresh = %1.2f, precision = %1.2f, recall = %1.2f, F1-score = %1.2f \n",
-        thresh_calc_avg_iou, cur_precision, cur_recall, f1_score);
+    // printf(" for thresh = %1.2f, precision = %1.2f, recall = %1.2f, F1-score = %1.2f \n",
+    //     thresh_calc_avg_iou, cur_precision, cur_recall, f1_score);
 
-    printf(" for thresh = %0.2f, TP = %d, FP = %d, FN = %d, average IoU = %2.2f %% \n",
-        thresh_calc_avg_iou, tp_for_thresh, fp_for_thresh, unique_truth_count - tp_for_thresh, avg_iou * 100);
+    // printf(" for thresh = %0.2f, TP = %d, FP = %d, FN = %d, average IoU = %2.2f %% \n",
+    //     thresh_calc_avg_iou, tp_for_thresh, fp_for_thresh, unique_truth_count - tp_for_thresh, avg_iou * 100);
 
     mean_average_precision = mean_average_precision / classes;
-    printf("\n mean average precision (mAP) = %f, or %2.2f %% \n", mean_average_precision, mean_average_precision * 100);
+    // printf("\n mean average precision (mAP) = %f, or %2.2f %% \n", mean_average_precision, mean_average_precision * 100);
 
 
     for (i = 0; i < classes; ++i) {
@@ -4533,7 +4533,7 @@ void validate_detector_map(char *datacfg, char *cfgfile, char *weightfile, float
     free(detections);
     free(truth_classes_count);
 
-    fprintf(stderr, "Total Detection Time: %f Seconds\n", (double)(time(0) - start));
+    // fprintf(stderr, "Total Detection Time: %f Seconds\n", (double)(time(0) - start));
 
     //getchar();
 }
@@ -4545,12 +4545,12 @@ void validate_calibrate_valid(char *datacfg, char *cfgfile, char *weightfile, in
     int j;
     list *options = read_data_cfg(datacfg);
     char *valid_images = option_find_str(options, "valid", "data/train.txt");
-    printf("valid=%s \n", valid_images);
+    // printf("valid=%s \n", valid_images);
 
     network net = parse_network_cfg(cfgfile, 1, 0);    // batch=1, quantized=0
 
     if (!input_calibration) {
-        printf("\n -input_calibration <number> - isn't specified in command line, will be used 1000 images \n\n");
+        // printf("\n -input_calibration <number> - isn't specified in command line, will be used 1000 images \n\n");
         input_calibration = 1000;
     }
     net.do_input_calibration = input_calibration;
@@ -4618,7 +4618,7 @@ void validate_calibrate_valid(char *datacfg, char *cfgfile, char *weightfile, in
     }
     time_t start = time(0);
     for (i = nthreads; i < m + nthreads; i += nthreads) {
-        fprintf(stderr, "%d\n", i);
+        // fprintf(stderr, "%d\n", i);
         for (t = 0; t < nthreads && i + t - nthreads < m; ++t) {
             pthread_join(thr[t], 0);
             val[t] = buf[t];

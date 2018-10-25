@@ -129,14 +129,14 @@ void draw_distribution(float *arr_ptr, int arr_size, char *name)
             //printf("pt1.x = %d, pt1.y = %d, pt2.x = %d, pt2.y = %d \n", pt1.x, pt1.y, pt2.x, pt2.y);
 
             //if(pt2.y < pt1.y)
-            cvRectangle(img, pt1, pt2, CV_RGB(128, 64, 32), CV_FILLED, 8, 0);
-            cvRectangle(img, pt1, pt2, CV_RGB(32, 32, 32), 1, 8, 0);
+            // cvRectangle(img, pt1, pt2, CV_RGB(128, 64, 32), CV_FILLED, 8, 0);
+            // cvRectangle(img, pt1, pt2, CV_RGB(32, 32, 32), 1, 8, 0);
         }
     }
 
     int index_multiplier = log2(1 / (multiplier*start_range));
     int x_coord_multiplier = index_multiplier*img_w / number_of_ranges;
-    cvLine(img, cvPoint(x_coord_multiplier, 0), cvPoint(x_coord_multiplier, img_h), CV_RGB(255, 32, 32), 1, 8, 0);
+    // cvLine(img, cvPoint(x_coord_multiplier, 0), cvPoint(x_coord_multiplier, img_h), CV_RGB(255, 32, 32), 1, 8, 0);
 
     char buff[256];
     //sprintf(buff, "[%g - %g]", min_val, max_val);
@@ -144,10 +144,10 @@ void draw_distribution(float *arr_ptr, int arr_size, char *name)
     //printf("[%g - %g]", min_val, max_val);
     CvFont font;
     cvInitFont(&font, CV_FONT_HERSHEY_COMPLEX, 1, 1, 0, 2, 8);
-    cvPutText(img, buff, cvPoint(100, 50), &font, CV_RGB(32, 64, 128));
+    // cvPutText(img, buff, cvPoint(100, 50), &font, CV_RGB(32, 64, 128));
 
-    if (name)
-        cvPutText(img, name, cvPoint(0, 20), &font, CV_RGB(32, 64, 128));
+    // if (name)
+    //     cvPutText(img, name, cvPoint(0, 20), &font, CV_RGB(32, 64, 128));
 
     float cur_range = start_range;
     cvInitFont(&font, CV_FONT_HERSHEY_COMPLEX, 0.5, 0.5, 0, 1, 8);
@@ -155,10 +155,10 @@ void draw_distribution(float *arr_ptr, int arr_size, char *name)
         CvPoint pt_text = cvPoint(j*img_w / number_of_ranges, img_h - 50);
         int lg = log2(cur_range);
         sprintf(buff, "%d", lg);
-        cvPutText(img, buff, pt_text, &font, CV_RGB(32, 64, 128));
+        // cvPutText(img, buff, pt_text, &font, CV_RGB(32, 64, 128));
         cur_range *= 2;
     }
-    cvPutText(img, "X and Y are log2", cvPoint(img_w / 2 - 100, img_h - 10), &font, CV_RGB(32, 64, 128));
+    // cvPutText(img, "X and Y are log2", cvPoint(img_w / 2 - 100, img_h - 10), &font, CV_RGB(32, 64, 128));
 
     cvShowImage("Distribution", img);
     cvWaitKey(0);
