@@ -960,6 +960,7 @@ extern "C" {
 #ifdef GPU
     // detect on GPU: yolov2_forward_network_gpu.cu
     float *network_predict_gpu_cudnn(network net, float *input);
+    float *network_predict_gpu_cudnn_custom(network net, float *gpu_input);
 
     // detect on GPU: yolov2_forward_network_gpu.cu - quantized INT8x4
     float *network_predict_gpu_cudnn_quantized(network net, float *input);

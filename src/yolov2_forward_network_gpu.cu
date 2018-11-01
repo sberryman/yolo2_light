@@ -551,7 +551,28 @@ float *network_predict_gpu_cudnn(network net, float *input)
     if (l.type != REGION && l.type != YOLO) status = cudaMemcpy(l.output, l.output_gpu, l.outputs*l.batch * sizeof(float), cudaMemcpyDeviceToHost);
     return l.output;
 }
+float *network_predict_gpu_cudnn_custom(network net, float *gpu_input)
+{
+    cudaError_t status = cudaSetDevice(net.gpu_index);
+    //check_error(status);
+    int size = net.layers[0].inputs * net.batch;
+    network_state state;
+    state.index = 0;
+    state.net = net;
+    //status = cudaMalloc((void **)&(state.input), sizeof(float)*size);
+    state.input = net.input_state_gpu;
+    // status = cudaMemcpy(state.input, gpu_input, sizeof(float)*size, cudaMemcpyDeviceToDevice);
+    state.truth = 0;
+    state.train = 0;
+    state.delta = 0;
 
+    forward_network_gpu_cudnn(net, state); // network on GPU
+    int i;
+    for (i = net.n - 1; i > 0; --i) if (net.layers[i].type != COST) break;
+    layer l = net.layers[i];
+    if (l.type != REGION && l.type != YOLO) status = cudaMemcpy(l.output, l.output_gpu, l.outputs*l.batch * sizeof(float), cudaMemcpyDeviceToHost);
+    return l.output;
+}
 
 // detect on GPU
 float *network_predict_gpu_cudnn_quantized(network net, float *input)
@@ -633,5 +654,3 @@ void init_gpu_int8x4(network net)
         }
     }
 }
-
-
